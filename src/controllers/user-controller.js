@@ -6,6 +6,7 @@ const userService = new UserService();
 const create = async (req, res) => {
     try {
         const response = await userService.create({
+            name : req.body.name,
             email: req.body.email,
             password: req.body.password
         });
@@ -86,10 +87,36 @@ const isAdmin = async(req, res) => {
         });
     }
 }
+const getProfile = async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+        if (!token) {
+            return res.status(400).json({
+            success: false,
+            message: 'Token is missing',
+            });
+        }
+        
+        const userService = new UserService();
+        const profile = await userService.getProfile(token);
+    
+        return res.status(200).json({
+          success: true,
+          data: profile,
+        });
+      } catch (error) {
+        return res.status(500).json({
+          success: false,
+          message: 'Failed to fetch profile',
+          err: error,
+        });
+      }
+};
 
 module.exports = {
     create,
     signIn,
     isAuthenticated,
-    isAdmin
+    isAdmin,
+    getProfile
 }

@@ -15,18 +15,26 @@ module.exports = (sequelize, DataTypes) => {
 
   User.init(
     {
+      name: {
+        // New field for storing user's name
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          len: [1, 50], // Ensure name is between 1 and 50 characters
+        },
+      },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          isEmail: true,
+          isEmail: true, // Validate email format
         },
       },
       password: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          len: [3, 100],
+          len: [3, 100], // Ensure password is between 3 and 100 characters
         },
       },
     },
@@ -37,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
         {
           unique: true,
           fields: ['email'],
-          name: 'unique_user_email', // Specify a unique name for the index
+          name: 'unique_user_email', // Unique index for the email field
         },
       ],
     }
@@ -51,5 +59,3 @@ module.exports = (sequelize, DataTypes) => {
 
   return User;
 };
-
-

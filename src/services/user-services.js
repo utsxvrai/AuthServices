@@ -25,9 +25,7 @@ class UserService {
 
     async signIn(email, plainPassword) {
         try {
-            // step 1-> fetch the user using the email
             const user = await this.userRepository.getByEmail(email);
-            // step 2-> compare incoming plain password with stores encrypted password
             const passwordsMatch = this.checkPassword(plainPassword, user.password);
 
             if(!passwordsMatch) {
@@ -36,6 +34,7 @@ class UserService {
             }
             // step 3-> if passwords match then create a token and send it to the user
             const newJWT = this.createToken({email: user.email, id: user.id});
+            console.log('Generated Token:', newJWT);
             return newJWT;
         } catch (error) {
             console.log("Something went wrong in the sign in process");
@@ -60,9 +59,38 @@ class UserService {
         }
     }
 
+    async getProfile(token) {
+        try {
+      // Verify the token to extract the user ID
+
+        const decoded = this.verifyToken(token);
+        if (!decoded || !decoded.id) {
+            throw { error: 'Invalid token' };
+        }
+
+      // Fetch the user by ID
+        const user = await this.userRepository.getById(decoded.id);
+        if (!user) {
+            throw { error: 'User not found' };
+        }
+
+      // Return the user's profile data
+        return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+        };
+        } catch (error) {
+        console.log('Something went wrong while fetching the profile');
+        throw error;
+        }
+    }
+
+
     createToken(user) {
         try {
-            const result = jwt.sign(user, JWT_KEY, {expiresIn: '1d'});
+            console.log('JWT_KEY during token creation:', JWT_KEY);
+            const result = jwt.sign(user, JWT_KEY, {expiresIn: '7d'});
             return result;
         } catch (error) {
             console.log("Something went wrong in token creation");

@@ -16,6 +16,12 @@ router.post(
 );
 
 router.get(
+    '/profile',
+    AuthMiddlewares.validateToken, // Middleware to validate token
+    UserController.getProfile // Controller to fetch user profile
+);
+
+router.get(
     '/isAuthenticated',
     UserController.isAuthenticated
 );
