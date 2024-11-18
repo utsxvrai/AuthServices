@@ -89,20 +89,22 @@ const isAdmin = async(req, res) => {
 }
 const getProfile = async (req, res) => {
     try {
-        const token = req.headers.authorization?.split(' ')[1];
-        if (!token) {
-            return res.status(400).json({
-            success: false,
-            message: 'Token is missing',
-            });
-        }
+        // const token = req.headers.authorization?.split(' ')[1]
+        const user = req.user;
+        // if (!token) {
+        //     return res.status(400).json({
+        //     success: false,
+        //     message: 'Token is missing',
+        //     });
+        // }
         
-        const userService = new UserService();
-        const profile = await userService.getProfile(token);
+        // const userService = new UserService();
+        // const profile = await userService.getProfile(token);
     
         return res.status(200).json({
           success: true,
-          data: profile,
+          data: user,
+          
         });
       } catch (error) {
         return res.status(500).json({
