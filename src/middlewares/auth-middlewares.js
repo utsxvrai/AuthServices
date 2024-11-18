@@ -1,4 +1,7 @@
 const { JWT_KEY } = require("../config/server-config");
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const validateUserAuth = (req, res, next) => {
     if(!req.body.email || !req.body.password) {
@@ -24,23 +27,27 @@ const validateIsAdminRequest = (req, res, next) => {
     next();
 }
 const validateToken = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(400).json({
-            success: false,
-            data: {},
-            message: 'Something went wrong',
-            err: 'Authorization header is missing or improperly formatted',
-        });
-    }
-    const token = authHeader.split(' ')[1]; 
+
+    const {token} = req.body;
+    // const authHeader = req.headers.authorization;
+    // if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    //     return res.status(400).json({
+    //         success: false,
+    //         data: {},
+    //         message: 'Something went wrong',
+    //         err: 'Authorization header is missing or improperly formatted',
+    //     });
+    // }
+    // const token = authHeader.split(' ')[1]; 
     try {
+        // console.log("token under validation :" ,token);
+
     
         // const decodedPayload = jwt.decode(token);
         // console.log("Decoded Payload:", decodedPayload);
         const decoded = jwt.verify(token, JWT_KEY);
-        console.log("Verified Decoded:", decoded);
-        req.userId = decoded.id; 
+        // console.log("Verified Decoded:", decoded);
+        req.user = decoded; 
         next();
     } catch (err) {
         return res.status(401).json({

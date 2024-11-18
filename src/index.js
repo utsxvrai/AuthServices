@@ -2,8 +2,13 @@ const express = require("express");
 const bodyParser = require('body-parser');
 const { ServerConfig , Logger} = require('./config')
 const db = require('./models');
-
+const cors = require('cors');
 const app = express();
+app.use(cors());
+app.use(cors({ origin: 'http://localhost:3000' }));
+
+
+
 const apiRoutes = require('./routes');
 
 const prepareAndStartServer = () => {
