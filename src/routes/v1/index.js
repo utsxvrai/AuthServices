@@ -21,6 +21,7 @@ router.post(
     UserController.getProfile // Controller to fetch user profile
 );
 
+
 router.get(
     '/isAuthenticated',
     UserController.isAuthenticated
